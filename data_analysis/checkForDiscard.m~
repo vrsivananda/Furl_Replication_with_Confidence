@@ -1,0 +1,17 @@
+function discardSubject = checkForDiscard(sa, discarded)
+    
+    % If the data is incomplete
+    if(length(sa.trial_index) ~= 376)
+        discarded.incompleteData_n = discarded.incompleteData_n + 1;
+        discarded.incompleteData_id = [discarded.incompleteData_id; sa.workerId{1}];
+        discardSubject = 1;
+        return
+    elseif(check_choseDAboveThreshold(dataStructure, choseDThreshold))
+        discarded.choseDAboveThershold = discarded.incompleteData_n + 1;
+        discarded.incompleteData_id = [discarded.incompleteData_id; sa.workerId{1}];
+        
+    else
+        discardSubject = 0;
+    end
+    
+end
