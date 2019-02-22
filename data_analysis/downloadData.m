@@ -92,3 +92,5 @@ for i = 1:numberOfSubjects
     
 
 end % End of for loop that goes through all the subjects
+
+disp('Download complete.');

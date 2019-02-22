@@ -16,7 +16,7 @@ numberOfSubjects = fscanf(subjectListFileId,'%d');
 
 % Switches and dynamic parameters
 saveFigure = 1; % Save the figure
-nTrials = 376; % Number of trials in sa
+nTrials = 476; % Number of trials in sa
 choseDThreshold = 0.20; % %_chosenD to determine discarding
 
 % -------------------------------------------------------------
@@ -39,6 +39,19 @@ percentChosen.D.linReg  = [];
 
 percentChosen.n_distractorRanks  = [];
 
+% Logistic Regression Data
+logRegData.choseT = []; % Response values [choseT]
+logRegData.rank_T = [];
+logRegData.rank_NT = [];
+logRegData.rank_D = [];
+logRegData.B_raw = [];
+logRegData.B_mean = [];
+logRegData.B_sd = [];
+logRegData.B_se = [];
+
+% Rating Difference Data
+ratingDifferenceData = [];
+
 
 % For loop that loops through all the subjects
 for i = 1:numberOfSubjects
@@ -57,10 +70,16 @@ for i = 1:numberOfSubjects
     %%%%%%%% Your data extraction here %%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    sa.time_elapsed(length(sa.time_elapsed))/60000
+    % The number of minutes that this subject took to complete the
+    % experiment
+    disp(strcat('Time taken: ', num2str(sa.time_elapsed(length(sa.time_elapsed))/60000), ' mins'));
     
     % Make sure the data is valid
     [discardSubject, discarded] = checkForDiscard(sa, discarded, nTrials, choseDThreshold);
+    % Criteria for discard:
+    % (1) Insufficient trials
+    % (2) Chose D at or above threshold in Phase 2
+    
     % If the data is not valid, then we continue
     if(discardSubject)
         continue;
@@ -69,12 +88,22 @@ for i = 1:numberOfSubjects
     % Increment the counter for valid subjects
     nValidSubjects = nValidSubjects + 1;
     
-    % Extract the data
+    % --- Extract the data ---
     
     % Time elapsed
     timeElapsed = [timeElapsed, sa.time_elapsed(length(sa.time_elapsed))];
     
+    % Get the percent chosed for each disractor face 
+    percentChosen = getPercentChosen(sa, percentChosen);
     
+    % Get the data for Logistic Regression
+    logRegData = getLogRegData(sa, logRegData);
+        
+    % Get the difference in face attractiveness ratings
+    ratingDifferenceData = getRatingDifferenceData(sa, ratingDifferenceData);
+    
+    % Get the confidence ratings and chosen faces
+    confidenceRatingsChosenFacesData = getConfidenceRatingsChosenFacesData(sa, confidenceRatingsData, chosenFacesData)
     
     
     
@@ -84,6 +113,18 @@ end % End of for loop that loops through each subject
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Your analysis here %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Analyze the percentChosen
+percentChosen = analyzePercentChosen(percentChosen);
+
+% Plot %_choseT vs D_Rank
+plot_percentChosen(percentChosen, saveFigure);
+
+% Run the Logistic Regression
+logRegData = run_LogReg(logRegData, saveFigure);
+
+% Plot difference ratings data
+plot_ratingDifference(ratingDifferenceData, saveFigure);
 
 
 

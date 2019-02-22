@@ -1077,11 +1077,15 @@
 	            timing_response: 1,
 	            trial_duration: 10,
 	            //display_element: $('#vert-center'),
-	            on_finish: function()
+	            on_finish: function(data)
 	            {
 	                // Create completionCode and check if it exists in the database. Keep running until a unique one is generated
 	                completionCode = Math.floor(Math.random() * 9000000 + 1000000); 
 	                checkID(false, completionCode, 'completion_code', tableName, function(exists){getNewSubID(exists);}); 
+                  
+                  //Add in the rt to avoid empty string
+                  data.rt = 0;
+                  data.key_press = 0;
 	            },
 	            timing_post_trial: 0
 	        };
