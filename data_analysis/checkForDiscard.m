@@ -1,5 +1,8 @@
 function [discardSubject, discarded] = checkForDiscard(sa, discarded, nTrials, choseDThreshold)
     
+    % Include subject unless it fulfills the criteria
+    discardSubject = 0;
+    
     % If the data is incomplete
     if(length(sa.trial_index) ~= nTrials)
         discarded.incompleteData_n = discarded.incompleteData_n + 1;
@@ -7,13 +10,8 @@ function [discardSubject, discarded] = checkForDiscard(sa, discarded, nTrials, c
         discardSubject = 1;
         return
     % Else if the subject chose D more than threshold
-    elseif(check_choseDAboveThreshold(sa, choseDThreshold))
-        discarded.choseDAboveThreshold = discarded.choseDAboveThreshold_n + 1;
-        discarded.choseDAboveThreshold_id = [discarded.choseDAboveThreshold_id; sa.workerId{1}];
-        discardSubject = 1;
-        return
     else
-        discardSubject = 0;
+        [discardSubject, discarded] = check_choseDAboveThreshold(sa, discarded, choseDThreshold);
     end
     
 end

@@ -1,6 +1,0 @@
-function discarded = makeDiscardedSA()
-    
-   discarded.inCompleteData
-    
-    
-end

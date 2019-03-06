@@ -1,4 +1,4 @@
-function choseDAboveThreshold = check_choseDAboveThreshold(sa, choseDThreshold)
+function [discardSubject, discarded] = check_choseDAboveThreshold(sa, discarded, choseDThreshold)
     
     % Get the number of trials where subjects chose D
     n_choseDistractor = length(...
@@ -14,9 +14,12 @@ function choseDAboveThreshold = check_choseDAboveThreshold(sa, choseDThreshold)
     % If it was below threshold, then we return true. Return false
     % otherwise
     if(percent_chosenDistractor < choseDThreshold)
-        choseDAboveThreshold = false;
+        discardSubject = 0;
     else
-        choseDAboveThreshold = true;
+        discarded.choseDAboveThreshold_n = discarded.choseDAboveThreshold_n + 1;
+        discarded.choseDAboveThreshold_id = [discarded.choseDAboveThreshold_id; sa.workerId{1}];
+        discarded.percent_choseDistractor = [discarded.percent_choseDistractor; percent_chosenDistractor];
+        discardSubject = 1;
     end
     
 end % End of function

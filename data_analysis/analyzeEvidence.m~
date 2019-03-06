@@ -1,0 +1,14 @@
+function evidenceData = analyzeEvidence(confidenceRatingsData, chosenFacesData)
+    
+    % Allocate for convenience
+    T = confidenceRatingsData.T;
+    NT = confidenceRatingsData.NT;
+    D = confidenceRatingsData.D;
+   
+    % Normalized PE
+    e_normalized = (T-NT)./(T+NT+D);
+    e_unnormalized = (T-NT);
+    
+    
+    
+end

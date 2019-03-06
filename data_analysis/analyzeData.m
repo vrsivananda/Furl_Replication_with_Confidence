@@ -6,7 +6,7 @@ clear;
 close all;
 
 % Create a path to the text file with all the subjects
-path='subjects.txt';
+path='subjects_test.txt';
 % Make an ID for the subject list file
 subjectListFileId=fopen(path);
 % Read in the number from the subject list
@@ -51,6 +51,20 @@ logRegData.B_se = [];
 
 % Rating Difference Data
 ratingDifferenceData = [];
+
+% Confidence Ratings Data
+confidenceRatingsData.T = [];
+confidenceRatingsData.NT = [];
+confidenceRatingsData.D = [];
+
+% Chosen Faces Data
+chosenFacesData.chosenFaces = [];
+chosenFacesData.chosenFaceRatings = [];
+
+% Face Ratings Data
+faceRatingsData.T = [];
+faceRatingsData.NT = [];
+faceRatingsData.D = [];
 
 
 % For loop that loops through all the subjects
@@ -103,7 +117,8 @@ for i = 1:numberOfSubjects
     ratingDifferenceData = getRatingDifferenceData(sa, ratingDifferenceData);
     
     % Get the confidence ratings and chosen faces
-    confidenceRatingsChosenFacesData = getConfidenceRatingsChosenFacesData(sa, confidenceRatingsData, chosenFacesData)
+    [confidenceRatingsData, chosenFacesData, faceRatingsData]...
+        = getConfidenceRatingsChosenFacesData(sa, confidenceRatingsData, chosenFacesData, faceRatingsData);
     
     
     
@@ -126,7 +141,7 @@ logRegData = run_LogReg(logRegData, saveFigure);
 % Plot difference ratings data
 plot_ratingDifference(ratingDifferenceData, saveFigure);
 
-
+evidenceData = analyzeEvidence(confidenceRatingsData, chosenFacesData);
 
 
 
