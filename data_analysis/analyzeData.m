@@ -6,7 +6,7 @@ clear;
 close all;
 
 % Create a path to the text file with all the subjects
-path='subjects_test.txt';
+path='subjects.txt';
 % Make an ID for the subject list file
 subjectListFileId=fopen(path);
 % Read in the number from the subject list
@@ -60,6 +60,7 @@ confidenceRatingsData.D = [];
 % Chosen Faces Data
 chosenFacesData.chosenFaces = [];
 chosenFacesData.chosenFaceRatings = [];
+chosenFacesData.correct = [];
 
 % Face Ratings Data
 faceRatingsData.T = [];
@@ -141,9 +142,11 @@ logRegData = run_LogReg(logRegData, saveFigure);
 % Plot difference ratings data
 plot_ratingDifference(ratingDifferenceData, saveFigure);
 
-evidenceData = analyzeEvidence(confidenceRatingsData, chosenFacesData);
+% Get the e_norm and e_unnorm data
+evidenceData = analyzeEvidence(confidenceRatingsData, chosenFacesData, faceRatingsData);
 
-
+% Plot confidence/performance vs. e_norm/e_unnorm
+plot_evidence(evidenceData, saveFigure);
 
 
 

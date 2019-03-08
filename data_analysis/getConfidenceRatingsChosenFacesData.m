@@ -13,16 +13,16 @@ function [confidenceRatingsData, chosenFacesData, faceRatingsData]...
     confidenceRatingsData.D  = [confidenceRatingsData.D,  sa.distractorFace_rating(AFC3_trialIndices)];
     
     % Face Ratings
-    faceRatingsData.T =  [faceRatingsData.T,  sa.targetFace_rating];
-    faceRatingsData.NT = [faceRatingsData.NT, sa.nonTargetFace_rating];
-    faceRatingsData.D =  [faceRatingsData.D,  sa.distractorFace_rating];
+    faceRatingsData.T =  [faceRatingsData.T,  sa.targetFace_rating(AFC3_trialIndices)    ];
+    faceRatingsData.NT = [faceRatingsData.NT, sa.nonTargetFace_rating(AFC3_trialIndices) ];
+    faceRatingsData.D =  [faceRatingsData.D,  sa.distractorFace_rating(AFC3_trialIndices)];
     
     % The chosen faces: 'target', 'non-target', or 'distractor'
-    chosenFacesData.chosenFaces = sa.chosenFace(AFC3_trialIndices);
+    chosenFacesData.chosenFaces = [chosenFacesData.chosenFaces, sa.chosenFace(AFC3_trialIndices)];
+    chosenFacesData.correct = [chosenFacesData.correct, sa.correct(AFC3_trialIndices)];
     
     % Prealocate array to be used in for loop below
     chosenFaceRatings = nan(length(AFC3_trialIndices),1);
-    
     
     % Fill in the confidence data of the chosen faces
     for i = 1:length(AFC3_trialIndices)
@@ -41,7 +41,7 @@ function [confidenceRatingsData, chosenFacesData, faceRatingsData]...
     end
     
     % Place the ratings array into the structure array
-    chosenFacesData.chosenFaceRatings = [chosenFacesData.chosenFaceRatings; chosenFaceRatings];
+    chosenFacesData.chosenFaceRatings = [chosenFacesData.chosenFaceRatings, chosenFaceRatings];
     
     
 end
