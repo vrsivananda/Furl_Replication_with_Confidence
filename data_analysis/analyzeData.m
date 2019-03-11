@@ -52,15 +52,17 @@ logRegData.B_se = [];
 % Rating Difference Data
 ratingDifferenceData = [];
 
+% Delete if unnecessary
 % Confidence Ratings Data
-confidenceRatingsData.T = [];
-confidenceRatingsData.NT = [];
-confidenceRatingsData.D = [];
+%confidenceRatingsData.T = [];
+%confidenceRatingsData.NT = [];
+%confidenceRatingsData.D = [];
 
 % Chosen Faces Data
 chosenFacesData.chosenFaces = [];
 chosenFacesData.chosenFaceRatings = [];
 chosenFacesData.correct = [];
+chosenFacesData.confidence = [];
 
 % Face Ratings Data
 faceRatingsData.T = [];
@@ -118,8 +120,8 @@ for i = 1:numberOfSubjects
     ratingDifferenceData = getRatingDifferenceData(sa, ratingDifferenceData);
     
     % Get the confidence ratings and chosen faces
-    [confidenceRatingsData, chosenFacesData, faceRatingsData]...
-        = getConfidenceRatingsChosenFacesData(sa, confidenceRatingsData, chosenFacesData, faceRatingsData);
+    [chosenFacesData, faceRatingsData]...
+        = getConfidenceRatingsChosenFacesData(sa, chosenFacesData, faceRatingsData);
     
     
     
@@ -129,6 +131,10 @@ end % End of for loop that loops through each subject
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Your analysis here %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+% Add path to extra functions, generate colors for each subject
+addpath([pwd '/distinguishable_colors']);
+colors = distinguishable_colors(size(ratingDifferenceData, 2));
 
 % Analyze the percentChosen
 percentChosen = analyzePercentChosen(percentChosen);
@@ -143,10 +149,10 @@ logRegData = run_LogReg(logRegData, saveFigure);
 plot_ratingDifference(ratingDifferenceData, saveFigure);
 
 % Get the e_norm and e_unnorm data
-evidenceData = analyzeEvidence(confidenceRatingsData, chosenFacesData, faceRatingsData);
+evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData);
 
 % Plot confidence/performance vs. e_norm/e_unnorm
-plot_evidence(evidenceData, saveFigure);
+plot_evidence(evidenceData, colors, saveFigure);
 
 
 

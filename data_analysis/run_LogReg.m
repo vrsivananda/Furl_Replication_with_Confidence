@@ -55,7 +55,7 @@ function logRegData = run_LogReg(logRegData, saveFigure)
     % Format the graph
     set(gca, 'XTickLabel', {'constant', 'Target__Rank', 'NonTarget__Rank', 'Distractor__Rank'});
     xlim([minX maxX]);
-    ylim([-0.5, 0.5]);
+    %ylim([-0.5, 0.5]);
     ylabel('Coefficient value');
     title(['Logistic Regression (n = ' num2str(nSubjects) ')']);
 
