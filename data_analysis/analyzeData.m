@@ -26,6 +26,7 @@ discarded = makeDiscardedSA();
 
 nValidSubjects = 0;
 timeElapsed = [];
+bonus = {'workerId', 'nCorrect', 'bonus?'};
 
 % Define the structure array:
 % Percent Chosen
@@ -62,7 +63,15 @@ ratingDifferenceData = [];
 chosenFacesData.chosenFaces = [];
 chosenFacesData.chosenFaceRatings = [];
 chosenFacesData.correct = [];
+
 chosenFacesData.confidence = [];
+chosenFacesData.zScoredConfidence = [];
+chosenFacesData.highLowConfidence = [];
+
+chosenFacesData.ROC_T.X = [];
+chosenFacesData.ROC_T.Y = [];
+chosenFacesData.ROC_T.Threshold = [];
+chosenFacesData.ROC_T.AUC = [];
 
 % Face Ratings Data
 faceRatingsData.T = [];
@@ -94,10 +103,13 @@ for i = 1:numberOfSubjects
     % Make sure the data is valid
     [discardSubject, discarded] = checkForDiscard(sa, discarded, nTrials, choseDThreshold);
     % Criteria for discard:
-    % (1) Insufficient trials
+    % (1) Insufficient trials (Trials do not equal exact amount, might have done exp twice also)
     % (2) Chose D at or above threshold in Phase 2
     
-    % If the data is not valid, then we continue
+    % Check if we need to bonus the subject
+    bonus = checkForBonus(subjectId, sa, discardSubject, bonus);
+    
+    % If the data is not valid, then we continue to the next subject
     if(discardSubject)
         continue;
     end
@@ -136,6 +148,9 @@ end % End of for loop that loops through each subject
 addpath([pwd '/distinguishable_colors']);
 colors = distinguishable_colors(size(ratingDifferenceData, 2));
 
+% Plot the ROC
+%plot_ROC(chosenFacesData, faceRatingsData, colors, saveFigure);
+
 % Analyze the percentChosen
 percentChosen = analyzePercentChosen(percentChosen);
 
@@ -153,6 +168,15 @@ evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData);
 
 % Plot confidence/performance vs. e_norm/e_unnorm
 plot_evidence(evidenceData, colors, saveFigure);
+
+% Get the confidence and attractiveness data
+attractivenessData = analyzeAttractiveness(chosenFacesData, faceRatingsData);
+
+% Plot confidence vs. T/TND
+plot_attractiveness(attractivenessData, colors, saveFigure);
+
+% Plot confidence vs percentCorrect
+plot_confidence_vs_percentCorrect(evidenceData, saveFigure);
 
 
 
