@@ -64,7 +64,8 @@ chosenFacesData.chosenFaces = [];
 chosenFacesData.chosenFaceRatings = [];
 chosenFacesData.correct = [];
 
-chosenFacesData.z_confidence = [];
+chosenFacesData.confidence = [];
+chosenFacesData.zScoredConfidence = [];
 chosenFacesData.highLowConfidence = [];
 
 chosenFacesData.ROC_T.X = [];
@@ -73,9 +74,9 @@ chosenFacesData.ROC_T.Threshold = [];
 chosenFacesData.ROC_T.AUC = [];
 
 % Face Ratings Data
-faceRatingsData.z_T = [];
-faceRatingsData.z_NT = [];
-faceRatingsData.z_D = [];
+faceRatingsData.T = [];
+faceRatingsData.NT = [];
+faceRatingsData.D = [];
 
 
 % For loop that loops through all the subjects

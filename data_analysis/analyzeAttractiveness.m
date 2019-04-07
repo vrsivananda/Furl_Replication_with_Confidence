@@ -32,9 +32,9 @@ function attractivenessData = analyzeAttractiveness(chosenFacesData, faceRatings
     attractivenessData.confidence_TND_se   = [];
        
     % Allocate for convenience
-    T  = faceRatingsData.T;
-    NT = faceRatingsData.NT;
-    D  = faceRatingsData.D; 
+    T  = faceRatingsData.z_T;
+    NT = faceRatingsData.z_NT;
+    D  = faceRatingsData.z_D; 
     
     % Overall Attractiveness
     TND = T+NT+D;
@@ -47,7 +47,7 @@ function attractivenessData = analyzeAttractiveness(chosenFacesData, faceRatings
         % Sort confidence, based on T
         [sorted_T, sort_index_T] = sort(T(:,i));
         
-        conf_col = chosenFacesData.confidence(:,i);
+        conf_col = chosenFacesData.z_confidence(:,i);
         sorted_conf_T = conf_col(sort_index_T);
         
         % Replace the arrays
@@ -59,7 +59,7 @@ function attractivenessData = analyzeAttractiveness(chosenFacesData, faceRatings
         % Sort confidence, based on TND
         [sorted_TND, sort_index_TND] = sort(TND(:,i));
         
-        conf_col = chosenFacesData.confidence(:,i);
+        conf_col = chosenFacesData.z_confidence(:,i);
         sorted_conf_TND = conf_col(sort_index_TND);
         
         % Replace the arrays

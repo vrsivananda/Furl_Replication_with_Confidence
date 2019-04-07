@@ -13,9 +13,9 @@ function [chosenFacesData, faceRatingsData]...
     %%%%%%%%%%%%%%%%%%%%
     
     % Face Ratings
-    faceRatingsData.T =  [faceRatingsData.T,  sa.targetFace_rating(AFC3_trialIndices)    ];
-    faceRatingsData.NT = [faceRatingsData.NT, sa.nonTargetFace_rating(AFC3_trialIndices) ];
-    faceRatingsData.D =  [faceRatingsData.D,  sa.distractorFace_rating(AFC3_trialIndices)];
+    faceRatingsData.z_T =  [faceRatingsData.z_T,  sa.z_targetFace_rating(AFC3_trialIndices)    ];
+    faceRatingsData.z_NT = [faceRatingsData.z_NT, sa.z_nonTargetFace_rating(AFC3_trialIndices) ];
+    faceRatingsData.z_D =  [faceRatingsData.z_D,  sa.z_distractorFace_rating(AFC3_trialIndices)];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Chosen Face Ratings %%%
@@ -33,11 +33,11 @@ function [chosenFacesData, faceRatingsData]...
         
         % Determine the chosen face and log the rating for the face
         if(strcmp(chosenFacesData.chosenFaces{i}, 'target'))
-            chosenFaceRatings(i,1) = faceRatingsData.T(i,1);
+            chosenFaceRatings(i,1) = faceRatingsData.z_T(i,1);
         elseif(strcmp(chosenFacesData.chosenFaces{i}, 'non-target'))
-            chosenFaceRatings(i,1) = faceRatingsData.NT(i,1);
+            chosenFaceRatings(i,1) = faceRatingsData.z_NT(i,1);
         elseif(strcmp(chosenFacesData.chosenFaces{i}, 'distractor'))
-            chosenFaceRatings(i,1) = faceRatingsData.D(i,1);
+            chosenFaceRatings(i,1) = faceRatingsData.z_D(i,1);
         else
             disp('Something is wrong here.');
         end
@@ -52,22 +52,22 @@ function [chosenFacesData, faceRatingsData]...
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Load in the confidence ratings
-    confidenceRatings = sa.response(confidence_trialIndices);
+    z_confidence = sa.z_response(confidence_trialIndices);
     
     % Confidence Ratings
-    chosenFacesData.confidence = [chosenFacesData.confidence, confidenceRatings];
+    %chosenFacesData.confidence = [chosenFacesData.confidence, confidenceRatings];
     
     % z-score the confidence ratings
-    chosenFacesData.zScoredConfidence = [chosenFacesData.zScoredConfidence, zscore(confidenceRatings)];
+    chosenFacesData.z_confidence = [chosenFacesData.z_confidence, z_confidence];
     
     % Get the binary high/low
-    binary_confidence = zscore(confidenceRatings) > 0;
+    binary_confidence = z_confidence > 0;
         
     % Preallocate the array
-    highLow_array = cell(length(confidenceRatings),1);
+    highLow_array = cell(length(z_confidence),1);
     
     % Divide the z-scored confidence into 'high' or 'low'
-    for i = 1:length(confidenceRatings)
+    for i = 1:length(z_confidence)
         if(binary_confidence(i,1) > 0)
             highLow_array{i,1} = 'high';
         else
@@ -81,7 +81,7 @@ function [chosenFacesData, faceRatingsData]...
     % --- Run the ROC --- 
     
     % Load in attractiveness ratings
-    T = sa.targetFace_rating(AFC3_trialIndices);    
+    T = sa.z_targetFace_rating(AFC3_trialIndices);    
     
     % Fit the GLM (Logistic Regression)
     mdl = fitglm(T,binary_confidence,'Distribution','binomial','Link','logit');

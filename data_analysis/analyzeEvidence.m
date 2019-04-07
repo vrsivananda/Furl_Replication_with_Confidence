@@ -20,6 +20,10 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
     sorted.correct_total = [];
     sorted.conf_total = [];
     
+    sorted.e_T = [];
+    sorted.correct_T = [];
+    sorted.conf_T = [];
+    
     % Normalized 
     
     evidenceData.e_norm_mean           = [];
@@ -62,16 +66,31 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
     evidenceData.confidence_total_sd   = [];
     evidenceData.confidence_total_se   = [];
     
+    % T 
+    
+    evidenceData.e_T_mean           = [];
+    evidenceData.e_T_sd             = [];
+    evidenceData.e_T_se             = [];
+    
+    evidenceData.performance_T_mean = [];
+    evidenceData.performance_T_sd   = [];
+    evidenceData.performance_T_se   = [];
+    
+    evidenceData.confidence_T_mean = [];
+    evidenceData.confidence_T_sd   = [];
+    evidenceData.confidence_T_se   = [];
+    
     
     % Allocate for convenience
-    T  = faceRatingsData.T;
-    NT = faceRatingsData.NT;
-    D  = faceRatingsData.D;
+    T  = faceRatingsData.z_T;
+    NT = faceRatingsData.z_NT;
+    D  = faceRatingsData.z_D;
    
-    % Normalized PE
+    % Various definitions of PE
     e_norm = (T-NT)./(T+NT+D);
     e_unnorm = (T-NT);
     e_total = (T+NT+D);
+    e_T = T;
     
     % For loop to sort and order each subject's data
     for i = 1:size(e_norm,2)
@@ -84,7 +103,7 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         correct_col = chosenFacesData.correct(:,i);
         sorted_correct_norm = correct_col(sort_index_norm);
         
-        conf_col = chosenFacesData.confidence(:,i);
+        conf_col = chosenFacesData.z_confidence(:,i);
         sorted_conf_norm = conf_col(sort_index_norm);
         
         % Append to our structure array
@@ -101,7 +120,7 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         correct_col = chosenFacesData.correct(:,i);
         sorted_correct_unnorm = correct_col(sort_index_unnorm);
         
-        conf_col = chosenFacesData.confidence(:,i);
+        conf_col = chosenFacesData.z_confidence(:,i);
         sorted_conf_unnorm = conf_col(sort_index_unnorm);
         
         % Append to our structure array
@@ -117,13 +136,29 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         correct_col = chosenFacesData.correct(:,i);
         sorted_correct_total = correct_col(sort_index_total);
         
-        conf_col = chosenFacesData.confidence(:,i);
+        conf_col = chosenFacesData.z_confidence(:,i);
         sorted_conf_total = conf_col(sort_index_total);
         
         % Append to our structure array
         sorted.e_total = [sorted.e_total, sorted_e_total];
         sorted.correct_total = [sorted.correct_total, sorted_correct_total];
         sorted.conf_total = [sorted.conf_total, sorted_conf_total];
+        
+        % --- T ---
+        
+        % Sort e, correct and confidence based on e_T
+        [sorted_e_T, sort_index_T] = sort(e_T(:,i));
+        
+        correct_col = chosenFacesData.correct(:,i);
+        sorted_correct_T = correct_col(sort_index_T);
+        
+        conf_col = chosenFacesData.z_confidence(:,i);
+        sorted_conf_T = conf_col(sort_index_T);
+        
+        % Append to our structure array
+        sorted.e_T = [sorted.e_T, sorted_e_T];
+        sorted.correct_T = [sorted.correct_T, sorted_correct_T];
+        sorted.conf_T = [sorted.conf_T, sorted_conf_T];
 
     end
     
@@ -165,6 +200,17 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         
         e_total_mean_array = [];
         e_total_sd_array = [];
+        
+        % T
+        
+        performance_T_mean_array = [];
+        performance_T_sd_array = [];
+        
+        confidence_T_mean_array = [];
+        confidence_T_sd_array = [];
+        
+        e_T_mean_array = [];
+        e_T_sd_array = [];
         
         % Get the segment size
         segment_size = size(e_norm,1)/segments;
@@ -241,6 +287,26 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
             e_total_sd_array = [e_total_sd_array; std(e_total_section)];
             
             
+            % --- T ---
+            
+            % Index out the relevant sections
+            conf_T_section = sorted.conf_T(start_index:end_index, i);
+            correct_T_section = sorted.correct_T(start_index:end_index, i);
+            e_T_section  = sorted.e_T(start_index:end_index, i);
+            
+            % Calculate the confidence
+            confidence_T_mean_array = [confidence_T_mean_array; sum(conf_T_section)/segment_size];
+            confidence_T_sd_array = [confidence_T_sd_array; std(conf_T_section)];
+            
+            % Calculate the performance
+            performance_T_mean_array = [performance_T_mean_array; sum(correct_T_section)/segment_size];
+            performance_T_sd_array = [performance_T_sd_array; std(correct_T_section)];
+            
+            % Calculate the e_norm
+            e_T_mean_array = [e_T_mean_array; mean(e_T_section)];
+            e_T_sd_array = [e_T_sd_array; std(e_T_section)];
+            
+            
         end
         % End of for loop that goes through each segment
         
@@ -285,6 +351,19 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         evidenceData.e_total_mean           = [evidenceData.e_total_mean, e_total_mean_array];
         evidenceData.e_total_sd             = [evidenceData.e_total_sd,   e_total_sd_array];
         evidenceData.e_total_se             = evidenceData.e_total_sd./sqrt(segment_size);
+        
+        % --- T ---
+        evidenceData.performance_T_mean = [evidenceData.performance_T_mean, performance_T_mean_array];
+        evidenceData.performance_T_sd   = [evidenceData.performance_T_sd,   performance_T_sd_array];
+        evidenceData.performance_T_se   = evidenceData.performance_T_sd./sqrt(segment_size);
+        
+        evidenceData.confidence_T_mean = [evidenceData.confidence_T_mean, confidence_T_mean_array];
+        evidenceData.confidence_T_sd   = [evidenceData.confidence_T_sd,   confidence_T_sd_array];
+        evidenceData.confidence_T_se   = evidenceData.confidence_T_sd./sqrt(segment_size);
+        
+        evidenceData.e_T_mean           = [evidenceData.e_T_mean, e_T_mean_array];
+        evidenceData.e_T_sd             = [evidenceData.e_T_sd,   e_T_sd_array];
+        evidenceData.e_T_se             = evidenceData.e_T_sd./sqrt(segment_size);
         
     end
     

@@ -1,5 +1,8 @@
 function plot_evidence(evidenceData, colors, saveFigure)
     
+    % Axis limits
+    z_conf_limit_y = [-1.5,1.5];
+    
     % Load in the variables for easy handling
     e_norm_mean    = evidenceData.e_norm_mean;
     e_norm_sd      = evidenceData.e_norm_sd;
@@ -155,9 +158,9 @@ function plot_evidence(evidenceData, colors, saveFigure)
     
     % Format graph
     title(['Confidence vs. Normalized Evidence (n = ' num2str(n_subjects) ')']);
-    ylabel('Confidence');
+    ylabel('z_confidence', 'Interpreter', 'none');
     xlabel('e normalized');
-    ylim([0, 100]);
+    ylim(z_conf_limit_y);
     
     
     % ------ Saving ------
@@ -201,9 +204,9 @@ function plot_evidence(evidenceData, colors, saveFigure)
     
     % Format graph
     title(['Confidence vs. Unnormalized Evidence (n = ' num2str(n_subjects) ')']);
-    ylabel('Confidence');
+    ylabel('z_confidence', 'Interpreter', 'none');
     xlabel('e unnormalized');
-    ylim([0, 100]);
+    ylim(z_conf_limit_y);
     
     
     % ------ Saving ------

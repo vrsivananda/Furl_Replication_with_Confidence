@@ -1,5 +1,8 @@
 function plot_attractiveness(attractivenessData, colors, saveFigure)
     
+    % Axis limits
+    z_conf_limit_y = [-1.5,1.5];
+    
     % Load in the variables for easy handling
     T_mean    = attractivenessData.T_mean;
     T_sd      = attractivenessData.T_sd;
@@ -49,9 +52,9 @@ function plot_attractiveness(attractivenessData, colors, saveFigure)
     
     % Format graph
     title(['Confidence vs. Attractiveness (T) (n = ' num2str(n_subjects) ')']);
-    ylabel('Confidence');
+    ylabel('z_onfidence', 'Interpreter', 'none');
     xlabel('Attractiveness (T)');
-    ylim([0, 100]);
+    ylim(z_conf_limit_y);
     
     
     % ------ Saving ------
@@ -95,9 +98,9 @@ function plot_attractiveness(attractivenessData, colors, saveFigure)
     
     % Format graph
     title(['Confidence vs. Attractiveness (T+N+D) (n = ' num2str(n_subjects) ')']);
-    ylabel('Confidence');
+    ylabel('z_confidence', 'Interpreter', 'none');
     xlabel('Attractiveness (T+N+D)');
-    ylim([0, 100]);
+    ylim(z_conf_limit_y);
     
     
     % ------ Saving ------
