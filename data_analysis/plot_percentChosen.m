@@ -44,7 +44,7 @@ function plot_percentChosen(percentChosen, saveFigure)
         addpath([pwd '/legappend']);
 
         % Plot
-        boundedline(1:10, mean_percentChosen, se_percentChosen,...
+        boundedline(flip(1:10), mean_percentChosen, se_percentChosen,...
             'alpha',...
             'cmap', cmap);
         
@@ -52,7 +52,7 @@ function plot_percentChosen(percentChosen, saveFigure)
         ylim([0, 1]);
         
         % Add in axis labels and title
-        xlabel('Distractor Rank (attractive ---> unattractive)');
+        xlabel('Distractor Rank (unattractive ---> attractive)');
         ylabel('% Chose Face');
         title(['Percent Chose Face vs. Distractor Rank (n = ' num2str(nSubjects) ')'])
 
@@ -84,15 +84,15 @@ function plot_percentChosen(percentChosen, saveFigure)
         % ------ Plot Linear Regression ------
         
         predictedY = X*linReg;
-        plot(x, predictedY, 'lineWidth', 2, 'Color', cmap);
+        p(i) = plot(flip(x), predictedY, 'lineWidth', 2, 'Color', cmap);
         
         hold on;
-        
-        % Add in the legend
-        legend({'T','','','NT','','','D','',''});
     
     end % End of for field loop
-
+        
+    % Add in the legend
+    legend([p(1) p(2) p(3)], faceTypes{1}, faceTypes{2}, faceTypes{3});
+    
     
     % ------ Saving ------
     
