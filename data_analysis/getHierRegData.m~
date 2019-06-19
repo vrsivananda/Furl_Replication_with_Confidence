@@ -1,0 +1,6 @@
+function hierRegData = getHierRegData(evidenceData)
+   
+    hierRegData.e_T = evidenceData.e_T_mean(:)
+    
+    
+end

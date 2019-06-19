@@ -5,8 +5,9 @@ function bonus = checkForBonus(subjectId, sa, discardSubject, bonus)
     if (discardSubject)
         ca =  {subjectId, 'discard', 0};
     else
-        % Get the amount correct
-        nCorrect = sa.nCorrect(471);
+        % Get the amount correct (Done in this way because the row orders might
+        % change in the database)
+        nCorrect = sa.nCorrect(~isnan(sa.nCorrect));
         
         % Get the previous nCorrect
         prev_nCorrect = bonus{end,2};

@@ -24,6 +24,10 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
     sorted.correct_T = [];
     sorted.conf_T = [];
     
+    sorted.e_furl = [];
+    sorted.correct_furl = [];
+    sorted.conf_furl = [];
+    
     % Normalized 
     
     evidenceData.e_norm_mean           = [];
@@ -80,6 +84,20 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
     evidenceData.confidence_T_sd   = [];
     evidenceData.confidence_T_se   = [];
     
+    % furl 
+    
+    evidenceData.e_furl_mean           = [];
+    evidenceData.e_furl_sd             = [];
+    evidenceData.e_furl_se             = [];
+    
+    evidenceData.performance_furl_mean = [];
+    evidenceData.performance_furl_sd   = [];
+    evidenceData.performance_furl_se   = [];
+    
+    evidenceData.confidence_furl_mean = [];
+    evidenceData.confidence_furl_sd   = [];
+    evidenceData.confidence_furl_se   = [];
+    
     
     % Allocate for convenience
     T  = faceRatingsData.z_T;
@@ -91,6 +109,7 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
     e_unnorm = (T-NT);
     e_total = (T+NT+D);
     e_T = T;
+    e_furl = (T-NT)./D;
     
     % For loop to sort and order each subject's data
     for i = 1:size(e_norm,2)
@@ -159,6 +178,22 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         sorted.e_T = [sorted.e_T, sorted_e_T];
         sorted.correct_T = [sorted.correct_T, sorted_correct_T];
         sorted.conf_T = [sorted.conf_T, sorted_conf_T];
+        
+        % --- Furl ---
+        
+        % Sort e, correct and confidence based on e_furl
+        [sorted_e_furl, sort_index_furl] = sort(e_furl(:,i));
+        
+        correct_col = chosenFacesData.correct(:,i);
+        sorted_correct_furl = correct_col(sort_index_furl);
+        
+        conf_col = chosenFacesData.z_confidence(:,i);
+        sorted_conf_furl = conf_col(sort_index_furl);
+        
+        % Append to our structure array
+        sorted.e_furl = [sorted.e_furl, sorted_e_furl];
+        sorted.correct_furl = [sorted.correct_furl, sorted_correct_furl];
+        sorted.conf_furl = [sorted.conf_furl, sorted_conf_furl];
 
     end
     
@@ -211,6 +246,17 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         
         e_T_mean_array = [];
         e_T_sd_array = [];
+        
+        % Furl
+        
+        performance_furl_mean_array = [];
+        performance_furl_sd_array = [];
+        
+        confidence_furl_mean_array = [];
+        confidence_furl_sd_array = [];
+        
+        e_furl_mean_array = [];
+        e_furl_sd_array = [];
         
         % Get the segment size
         segment_size = size(e_norm,1)/segments;
@@ -307,6 +353,26 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
             e_T_sd_array = [e_T_sd_array; std(e_T_section)];
             
             
+            % --- Furl ---
+            
+            % Index out the relevant sections
+            conf_furl_section = sorted.conf_furl(start_index:end_index, i);
+            correct_furl_section = sorted.correct_furl(start_index:end_index, i);
+            e_furl_section  = sorted.e_furl(start_index:end_index, i);
+            
+            % Calculate the confidence
+            confidence_furl_mean_array = [confidence_furl_mean_array; sum(conf_furl_section)/segment_size];
+            confidence_furl_sd_array = [confidence_furl_sd_array; std(conf_furl_section)];
+            
+            % Calculate the performance
+            performance_furl_mean_array = [performance_furl_mean_array; sum(correct_furl_section)/segment_size];
+            performance_furl_sd_array = [performance_furl_sd_array; std(correct_furl_section)];
+            
+            % Calculate the e_norm
+            e_furl_mean_array = [e_furl_mean_array; mean(e_furl_section)];
+            e_furl_sd_array = [e_furl_sd_array; std(e_furl_section)];
+            
+            
         end
         % End of for loop that goes through each segment
         
@@ -364,6 +430,19 @@ function evidenceData = analyzeEvidence(chosenFacesData, faceRatingsData)
         evidenceData.e_T_mean           = [evidenceData.e_T_mean, e_T_mean_array];
         evidenceData.e_T_sd             = [evidenceData.e_T_sd,   e_T_sd_array];
         evidenceData.e_T_se             = evidenceData.e_T_sd./sqrt(segment_size);
+        
+        % --- Furl ---
+        evidenceData.performance_furl_mean = [evidenceData.performance_furl_mean, performance_furl_mean_array];
+        evidenceData.performance_furl_sd   = [evidenceData.performance_furl_sd,   performance_furl_sd_array];
+        evidenceData.performance_furl_se   = evidenceData.performance_furl_sd./sqrt(segment_size);
+        
+        evidenceData.confidence_furl_mean = [evidenceData.confidence_furl_mean, confidence_furl_mean_array];
+        evidenceData.confidence_furl_sd   = [evidenceData.confidence_furl_sd,   confidence_furl_sd_array];
+        evidenceData.confidence_furl_se   = evidenceData.confidence_furl_sd./sqrt(segment_size);
+        
+        evidenceData.e_furl_mean           = [evidenceData.e_furl_mean, e_furl_mean_array];
+        evidenceData.e_furl_sd             = [evidenceData.e_furl_sd,   e_furl_sd_array];
+        evidenceData.e_furl_se             = evidenceData.e_furl_sd./sqrt(segment_size);
         
     end
     

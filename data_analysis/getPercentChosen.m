@@ -82,8 +82,8 @@ function percentChosen = getPercentChosen(sa, percentChosen)
         % Linear Regression
         linReg = X\y;
         
-        disp([faceType ' intercept: ' num2str(linReg(1))]);
-        disp([faceType ' slope    : ' num2str(linReg(2))]);
+        %disp([faceType ' intercept: ' num2str(linReg(1))]);
+        %disp([faceType ' slope    : ' num2str(linReg(2))]);
         
         % Save the linReg data
         percentChosen.(faceType).linReg = [percentChosen.(faceType).linReg;...

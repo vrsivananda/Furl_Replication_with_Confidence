@@ -26,6 +26,9 @@ function plot_confidence_vs_percentCorrect(evidenceData, saveFigure)
     perf_T_mean = evidenceData.performance_T_mean;
     conf_T_mean = evidenceData.confidence_T_mean;
     
+    perf_furl_mean = evidenceData.performance_furl_mean;
+    conf_furl_mean = evidenceData.confidence_furl_mean;
+    
     % Get numbers
     n_subjects = size(perf_norm_mean, 2); 
     n_conditions = size(perf_norm_mean, 1); 
@@ -213,6 +216,53 @@ function plot_confidence_vs_percentCorrect(evidenceData, saveFigure)
         saveas(gcf,savingFilePath);
         
     end
+    
+    
+    % ---------- Furl ----------
+    
+    figure;
+    
+    % Go through each condition
+    for i = 1:n_conditions
+        
+        % Color
+        color = color_gradient(i,:);
+        
+        x_mean = perf_furl_mean(i,:);
+        y_mean = conf_furl_mean(i,:);
+        
+        scatter(x_mean, y_mean, 'MarkerEdgeColor', color, 'Marker', 'o', 'MarkerFaceColor', color);
+        
+        hold on;
+
+    end
+    % End of performance plot for loop
+    
+    % Format graph
+    title(['Confidence vs. Performance (Furl Evidence ((T-N)/D)) (n = ' num2str(n_subjects) ')']);
+    ylabel('z_confidence', 'Interpreter', 'none');
+    xlabel('% Correct');
+    ylim(z_conf_limit_y);
+    xlim([0, 1]);
+    % Legend
+    legend(legendText, 'Location', 'southwest');
+    legend show;
+    
+    
+    % ------ Saving ------
+    
+    % Only save the figure if we want to
+    if(saveFigure)
+        
+        % Create the file name and path to save
+        savingFileName = 'conf_vs_perf(e_furl).jpg';
+        savingFilePath = [pwd '/Figures/Overall/' savingFileName];
+        
+        % Save the data
+        saveas(gcf,savingFilePath);
+        
+    end
+    
     
     
     

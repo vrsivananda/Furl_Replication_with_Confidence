@@ -89,7 +89,7 @@ function [chosenFacesData, faceRatingsData]...
     scores = mdl.Fitted.Probability;
     
     [X,Y,Threshold,AUC] = perfcurve(highLow_array,scores,'high');
-    disp(length(X));
+    %disp(length(X));
     
     % Place it in the structure array
 %     chosenFacesData.ROC_T.X = [chosenFacesData.ROC_T.X, X];

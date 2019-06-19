@@ -76,6 +76,13 @@ chosenFacesData.ROC_T.AUC = [];
 faceRatingsData.z_T = [];
 faceRatingsData.z_NT = [];
 faceRatingsData.z_D = [];
+    
+% Evidence by Trial
+perTrialData.e_norm = [];
+perTrialData.e_unnorm = [];
+perTrialData.e_total = [];
+perTrialData.e_T = [];
+perTrialData.e_furl = [];
 
 
 % For loop that loops through all the subjects
@@ -84,7 +91,7 @@ for i = 1:numberOfSubjects
     % Read the subject ID from the file, stop after each line
     subjectId = fscanf(subjectListFileId,'%s',[1 1]);
     % Print out the subject ID
-    %fprintf('subject: %s\n',subjectId);
+    fprintf('subject: %s\n',subjectId);
     
     % Import the data
     Alldata = load([pwd '/Data/structure_data_' subjectId '.mat']);
@@ -180,7 +187,18 @@ plot_attractiveness(attractivenessData, colors, saveFigure);
 % Plot confidence vs percentCorrect
 plot_confidence_vs_percentCorrect(evidenceData, saveFigure);
 
+% Get the hierarchical regression data
+hierRegData = getHierRegData(evidenceData);
 
 
+% Get the evidence per trial 
+perTrialData = getEvidenceAndConfidenceByTrial(faceRatingsData, chosenFacesData, perTrialData);
+AUCData = getAUCData(perTrialData);
+plotAUCData(AUCData, colors, saveFigure);
+corrData = getCorr(perTrialData);
+%plotCorrData(corrData, perTrialData, colors, saveFigure);
+
+% Save the per trial data for Megan
+save('perTrialData.mat','perTrialData');
 
 
